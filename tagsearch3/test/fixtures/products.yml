@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  tag: MyString
+  tag1: MyString
+  tag2: MyString
+  tag3: MyString
+  tag4: MyString
+  tag5: MyString
+  tag6: MyString
+  tag7: MyString
+  tag8: MyString
+  tag9: MyString
+
+two:
+  tag: MyString
+  tag1: MyString
+  tag2: MyString
+  tag3: MyString
+  tag4: MyString
+  tag5: MyString
+  tag6: MyString
+  tag7: MyString
+  tag8: MyString
+  tag9: MyString
