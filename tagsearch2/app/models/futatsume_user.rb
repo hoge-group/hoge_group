@@ -1,0 +1,2 @@
+class FutatsumeUser < Futatsume 
+end

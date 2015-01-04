@@ -20,3 +20,9 @@ CSV.foreach('db/sample.csv') do |row|
                :tag8 => row[8],
                :tag9 => row[9])
 end
+
+
+CSV.foreach('db/search_word.csv') do |row|
+  Futatsume.create(:name => row[0],
+               )
+end

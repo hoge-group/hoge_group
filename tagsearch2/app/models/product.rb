@@ -9,7 +9,6 @@ class Product < ActiveRecord::Base
   def self.search(search)
 
 
-
     search ||= ""
     keyword_arrays = search.gsub(/　/," ").split()
     for f in 0..(keyword_arrays.length-1) do
@@ -23,6 +22,10 @@ class Product < ActiveRecord::Base
     keyword_arrays[f] = k.join
     end
 
+
+          where_clause = "(',' || tag || ',' || tag1 || ',' || tag2 || ',' || tag3 || ',' || tag4 || ',' || tag5 || ',' || tag6 || ',' || tag7 || ',' || tag8 || ',' || tag9) LIKE ?"
+
+
       if keyword_arrays.length >= 2  then
  
 
@@ -33,6 +36,17 @@ class Product < ActiveRecord::Base
    
          products_sel_and = [where_clause_and, "%,#{keyword_arrays[0]},%","%,#{keyword_arrays[1]},%"]
 
+
+      search_A =  Product.where([where_clause, "%,#{keyword_arrays[0]},%"]).count    
+
+    for f in 1..(Futatsume.count) do
+      search_word = Futatsume.where(:id => "#{f}").pluck(:name).join 
+      search_A_and_B = Product.where([where_clause_and, "%,#{keyword_arrays[0]},%","%,#{search_word},%"]).count
+      if search_A_and_B > (search_A*0.01) then
+        search_B = Product.where([where_clause, "%,#{search_word},%"]).count
+        Futatsume.find("#{f}").update_attribute(:value,search_A_and_B.to_f/search_A.to_f)
+      end
+    end
 
       else
           where_clause_or = "(',' || tag || ',' || tag1 || ',' || tag2 || ',' || tag3 || ',' || tag4 || ',' || tag5 || ',' || tag6 || ',' || tag7 || ',' || tag8 || ',' || tag9) LIKE ?"
@@ -57,7 +71,7 @@ class Product < ActiveRecord::Base
     logger.debug("SQL: #{Product.where(products_sel).to_sql}")
     logger.debug("SQL: #{Product.where(products_sel_and).to_sql}")
 
-    return Product.where(products_sel), Product.where(products_sel_and)
+    return Product.where(products_sel).count, Product.where(products_sel_and).count
     
   end
 end

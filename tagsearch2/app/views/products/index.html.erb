@@ -33,9 +33,9 @@ AND検索ヒット数 <%= @and_hits %> 件
     </tr>
   </thead>
 
-
+<% if false %>
   <tbody>
-    <% @products[0].each do |product| %>
+  <% @products[0].each do |product| %>
       <tr>
         <td><%= product.tag %></td>
         <td><%= product.tag1 %></td>
@@ -54,8 +54,7 @@ AND検索ヒット数 <%= @and_hits %> 件
     <% end %>
   </tbody>
 </table>
-
-
+<% end %>
 <br>
 
 <%= link_to 'New Product', new_product_path %>

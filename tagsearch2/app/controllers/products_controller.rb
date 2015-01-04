@@ -6,8 +6,8 @@ class ProductsController < ApplicationController
 
   def index
     @products = Product.search(params[:search])
-    @or_hits = @products[0].count
-    @and_hits = @products[1].count 
+    @or_hits = @products[0]
+    @and_hits = @products[1] 
  end
 
 
