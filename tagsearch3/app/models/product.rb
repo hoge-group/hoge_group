@@ -7,70 +7,69 @@ class Product < ActiveRecord::Base
 
 
   def self.search(search)
-
+    
+    #変数定義
+    kinji_value = Array.new{Array.new(2)}
+    sorted = [[nil,nil]] 
 
     search ||= ""
     keyword_arrays = search.gsub(/　/," ").split()
     for f in 0..(keyword_arrays.length-1) do
      k = keyword_arrays[f].split("")
+     search_tag = keyword_arrays[0]
 
      for i in 0..(k.length-1) do
       if k[i] =~ /[^\w]/ then
-       k[i] = NKF.nkf('-w16xm0', k[i]).inspect.delete("\"")
+       k[i] = NKF.nkf('-w16xm0', k[i]).inspect.delete("\"").downcase
       end
      end
     keyword_arrays[f] = k.join
     end
+         
+     where_clause = "(tag) GLOB ?"
 
 
-          where_clause = "(' ' || tag ) GLOB ?"
+      if keyword_arrays.length != 1  then
+         sorted = [nil,nil]
+         return nil, nil, sorted
+      end 
+
+         where_clause_or = "'vocaloid_tags'.'tag' GLOB ? OR 'vocaloid_tags'.'tag' GLOB ?"
+         where_clause_and = "SELECT id FROM vocaloid_tags WHERE 'vocaloid_tags'.'tag' GLOB ? INTERSECT SELECT id FROM 'vocaloid_tags' WHERE 'vocaloid_tags'.'tag' GLOB ?"
+
+  
+      search_A =  VocaloidTag.where([where_clause, "#{keyword_arrays[0]}"]).count 
+      i = 0
+
+           for f in 1..(Futatsume.count) do
+            search_word_utf8 = Futatsume.where(:id => "#{f}").pluck(:name).join 
+            search_word = NKF.nkf('-w16xm0', search_word_utf8).inspect.delete("\"").downcase 
+            search_A_and_B = VocaloidTag.find_by_sql([where_clause_and, "#{keyword_arrays[0]}","#{search_word}"]).count
+             if search_A_and_B > (search_A*0.001) then
+              search_B = VocaloidTag.where([where_clause, "#{search_word}"]).count
+              kinji_value[i] = ["#{search_word_utf8}",(search_A_and_B.to_f/search_A.to_f*(search_A_and_B.to_f/search_B.to_f)**2).round(5),search_B]
+              i = i+1
+             end
+           end
+
+        
+        if kinji_value != nil 
+          sorted = kinji_value.sort {|a, b| b[1] <=> a[1] } 
+        end
 
 
-      if keyword_arrays.length >= 2  then
- 
-
-         where_clause_or = "(' ' || tag ) GLOB ? OR (' ' || tag ) GLOB ?"
-         where_clause_and = "(' ' || tag ) GLOB ? AND (' ' || tag ) GLOB ?"
-
-         products_sel = [where_clause_or, "* #{keyword_arrays[0]} *","* #{keyword_arrays[1]} *"]
+       products_sel = [where_clause,"#{keyword_arrays[0]}"]
    
-         products_sel_and = [where_clause_and, "* #{keyword_arrays[0]} *","* #{keyword_arrays[1]} *"]
+       products_sel_and = [where_clause,"#{keyword_arrays[0]}"]
 
-
-      search_A =  Product.where([where_clause, "* #{keyword_arrays[0]} *"]).count    
-
-    for f in 1..(Futatsume.count) do
-      search_word = Futatsume.where(:id => "#{f}").pluck(:name).join 
-      search_A_and_B = Product.where([where_clause_and, "* #{keyword_arrays[0]} *","* #{search_word} *"]).count
-      if search_A_and_B > (search_A*0.01) then
-        search_B = Product.where([where_clause, "* #{search_word} *"]).count
-        Futatsume.find("#{f}").update_attribute(:value,search_A_and_B.to_f/search_A.to_f)
-      end
-    end
-
-      else
-          where_clause_or = "(' ' || tag ) GLOB ?"
-         where_clause_and = "(' ' || tag ) GLOB ?" 
-
-
-    products_sel = [where_clause_or, "* #{keyword_arrays[0]} *"]
-   
-    products_sel_and = [where_clause_and, "* #{keyword_arrays[0]} *"]
-
-      end  
    
 
-#   for i in 1...keyword_arrays.length
-#      seminars_sel = seminars_sel.or(concat.matches("\%#{keyword_arrays[i]}\%"))
-#      seminars_sel_and = seminars_sel_and.and(concat.matches("\%#{keyword_arrays[i]}\%")) 
-#   end
 
 
+    logger.debug("SQL: #{IdTag.where(products_sel).to_sql}")
+    logger.debug("SQL: #{IdTag.where(products_sel_and).to_sql}")
 
-    logger.debug("SQL: #{Product.where(products_sel).to_sql}")
-    logger.debug("SQL: #{Product.where(products_sel_and).to_sql}")
-
-    return Product.where(products_sel).count, Product.where(products_sel_and).count
+    return search_A, search_tag, sorted 
     
   end
 end

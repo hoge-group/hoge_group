@@ -1,0 +1,55 @@
+<h1>SportsTags#index</h1>
+
+<h1>ニコニコタグ検索</h1>
+
+
+      <%= form_tag @sports_tag, :method => 'get' do %>
+  <p>
+          <%= text_field_tag :search, params[:search] %>
+          <%= submit_tag "検索", :name => nil %>
+  </p>
+      <% end %>
+
+
+
+
+<p>
+<% if @search_word.nil? then %>
+<p>
+検索タグは"ひとつ"にしてね (○ = > [ニコニコ動画] × => [youtube_ニコニコ動画])
+</p>
+<% end %>
+
+検索タグ:<%= @search_word %>　検索ヒット数 <%= @hits %> 件
+
+</p>
+
+</p>
+
+
+<table>
+  <thead>
+    <tr>
+      <th>Tag</th>
+      <th>Late</th>
+      <th>Tag_value</th>
+   </tr>
+  </thead>
+
+  <tbody>
+   <% if !@search_word.nil? then %> 
+    <% @products[2].each do |kinji, kinji2, kinji3| %>
+      <tr>
+        <td> <%= link_to kinji, "http://search.nicovideo.jp/video/tag/#{kinji}", :target => "_blank" %></td>
+        <td><%= kinji2 %></td>
+        <td><%= kinji3 %></td>
+     </tr>
+    <% end %>
+   <% end %>
+  </tbody>
+</table>
+<br>
+
+
+
+<p>Find me in app/views/sports_tags/index.html.erb</p>

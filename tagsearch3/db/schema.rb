@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150103155914) do
+ActiveRecord::Schema.define(version: 20150110194528) do
 
   create_table "futatsume_users", force: true do |t|
     t.datetime "created_at"
@@ -24,6 +24,21 @@ ActiveRecord::Schema.define(version: 20150103155914) do
     t.string   "name"
     t.decimal  "value"
   end
+
+  create_table "id_tags", id: false, force: true do |t|
+    t.integer "video_id"
+    t.text    "tag"
+  end
+
+  add_index "id_tags", ["tag"], name: "tagindex"
+  add_index "id_tags", ["video_id"], name: "id_tags_video_idindex"
+
+  create_table "id_tags2", id: false, force: true do |t|
+    t.integer "video_id"
+    t.text    "tag"
+  end
+
+  add_index "id_tags2", ["tag"], name: "idtags2index"
 
   create_table "products", force: true do |t|
     t.string   "tag"
@@ -39,5 +54,31 @@ ActiveRecord::Schema.define(version: 20150103155914) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "sports_tags", id: false, force: true do |t|
+    t.integer "id"
+    t.text    "tag"
+  end
+
+  create_table "sports_words", force: true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tbl_segdir", primary_key: "level", force: true do |t|
+    t.integer "idx"
+    t.integer "start_block"
+    t.integer "leaves_end_block"
+    t.integer "end_block"
+    t.binary  "root"
+  end
+
+  create_table "vocaloid_tags", id: false, force: true do |t|
+    t.integer "id"
+    t.text    "tag"
+  end
+
+  add_index "vocaloid_tags", ["id"], name: "vocaloid_tags_id_index"
+  add_index "vocaloid_tags", ["tag"], name: "vocaloid_tags_tagindex"
 
 end

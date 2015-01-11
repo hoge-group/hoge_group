@@ -8,12 +8,15 @@
 
 require "csv"
 
-CSV.foreach('db/sample.csv') do |row|
-  Product.create(:tag => row[0])
-end
+#CSV.foreach('db/sample.csv') do |row|
+#  Product.create(:tag => row[0])
+#end
 
 
-CSV.foreach('db/search_word.csv') do |row|
-  Futatsume.create(:name => row[0],
+CSV.foreach('db/sports_word.csv') do |row|
+  SportsWord.create(:name => row[1]
                )
 end
+
+#  IdTag.create(:video_id => '1',
+#               :tag => "test")

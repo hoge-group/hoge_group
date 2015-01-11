@@ -6,8 +6,10 @@ class ProductsController < ApplicationController
 
   def index
     @products = Product.search(params[:search])
-    @or_hits = @products[0]
-    @and_hits = @products[1] 
+    @hits = @products[0]
+    @search_word = @products[1]
+    @kinji_value = @products[2] 
+
  end
 
 
