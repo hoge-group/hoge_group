@@ -1,0 +1,15 @@
+*~
+*#
+.#*
+*.out
+.DS_Store
+
+*.gem
+*.rbc
+.bundle
+.config
+test/tmp
+test/version_tmp
+tmp
+
+*/db/*.csv
