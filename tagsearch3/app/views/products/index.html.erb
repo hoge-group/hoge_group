@@ -1,14 +1,14 @@
 <h1>ニコニコタグ検索</h1>
 
 
-      <%= form_tag products_path, :method => 'get' do %>
+      <%= form_tag @product, :method => 'get' do %>
   <p>
           <%= text_field_tag :search, params[:search] %>
-          <%= submit_tag "検索", :name => nil %>
+          <%= submit_tag "Vocaloidで検索", :name => 'vocaloid' %>
+         <%= submit_tag "スポーツで検索", :name => 'sports' %> 
+         <%= submit_tag "アニメで検索", :name => 'anime' %>
   </p>
-      <% end %>
-
-
+<% end %>
 
 
 <p>

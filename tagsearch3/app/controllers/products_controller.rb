@@ -5,7 +5,13 @@ class ProductsController < ApplicationController
   # GET /products.json
 
   def index
+    if params[:sports] then
+    @products = SportsTag.search(params[:search])
+    elsif params[:anime] then
+    @products = AnimeTag.search(params[:search])
+    else 
     @products = Product.search(params[:search])
+    end
     @hits = @products[0]
     @search_word = @products[1]
     @kinji_value = @products[2] 
